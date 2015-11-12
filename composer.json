@@ -1,5 +1,5 @@
 {
-    "name": "infinety/crud_mod",
+    "name": "infinety-es/crud",
     "description": "Quickly build an admin interface for your Eloquent models, using Laravel 5. Build a CMS in a matter of minutes.",
     "keywords": [
         "CRUD",
@@ -7,7 +7,7 @@
         "update",
         "delete",
         "read",
-        "infinety",
+        "infinety"
     ],
     "license": "MIT",
     "authors": [
