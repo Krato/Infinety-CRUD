@@ -13,7 +13,6 @@ use Storage;
 use starter\Http\Locale;
 use Prologue\Alerts\Facades\Alert;
 use yajra\Datatables\Facades\Datatables;
-
 // VALIDATION: change the requests to match your own file names if you need form validation
 use Infinety\CRUD\Http\Requests\CrudRequest as StoreRequest;
 use Infinety\CRUD\Http\Requests\CrudRequest as UpdateRequest;
@@ -77,6 +76,7 @@ class CrudController extends BaseController {
 
 		// get all results for that entity
 		$model = $this->crud['model'];
+
         if(isset($this->crud['is_translate']) && $this->crud['is_translate'] == true ){
 			$this->data['entries'] = $model::orderby("id", "ASC")->get();
 
@@ -196,6 +196,11 @@ class CrudController extends BaseController {
                 } else {
                     $datatable
                         ->editColumn($column['name'], function($columnInfo) use ($column) {
+                            if(trim($columnInfo->$column['name']) == ""){
+                                if(isset($this->crud["is_translate"]) && $this->crud["is_translate"] == true){
+                                    $columnInfo->$column['name'] = $columnInfo->translate()->$column['name'];
+                                }
+                            }
                             return str_limit(strip_tags($columnInfo->$column['name']), 80, "[...]");
                         });
 
@@ -273,7 +278,11 @@ class CrudController extends BaseController {
 
             foreach($this->data['crud']['languages'] as $language){
 
-                $itemInfo = array("page_id"=>$item->id, "locale"=> $language["iso"]);
+
+				$table = new $model;
+				$table = $table->getTable();
+
+                $itemInfo = array($table."_id"=>$item->id, "locale"=> $language["iso"]);
                 $translatedFIelds = array_merge($itemInfo,$translated_items[$language["iso"]]);
                 $modelTranslatable::create($translatedFIelds);
             }
@@ -330,6 +339,7 @@ class CrudController extends BaseController {
 		{
 			$this->crud['fields'] = $this->data['crud']['update_fields'];
 		}
+
 
 		// prepare the fields you need to show and prepopulate the values
 
@@ -388,8 +398,9 @@ class CrudController extends BaseController {
             $modelTranslatable = $this->crud["model_translate"];
 
             foreach($this->data['crud']['languages'] as $language){
-
-                $modelTranslatable::where("page_id", \Request::input('id'))
+				$table = new $model;
+				$table = $table->getTable();
+                $modelTranslatable::where($table."_id", \Request::input('id'))
                                     ->where("locale", $language["iso"])
                                     ->update($translated_items[$language["iso"]]);
             }
@@ -1029,10 +1040,9 @@ class CrudController extends BaseController {
                     // set the value
                 foreach($fields["normal"] as $k => $field){
 
-                    if($k != "type"){
+                    if(isset($field["type"])){
 
                         if (!isset($field['value'])) {
-                            \Log::info($field['name']);
                             $fields["normal"][$k]['value'] = $entry->$field['name'];
                         }
                     } else {
@@ -1075,6 +1085,7 @@ class CrudController extends BaseController {
 
             } else {
                 $fields = $this->crud['fields'];
+
                 foreach ($fields as $k => $field) {
                     // set the value
                     if (!isset($this->crud['fields'][$k]['value']))
@@ -1098,7 +1109,6 @@ class CrudController extends BaseController {
 
 
 	}
-
 
     /**
      * Return correct field array
