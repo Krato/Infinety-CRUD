@@ -7,7 +7,10 @@
 
 return [
 	
-	"locale-model" => 'Infinety\CRUD\Models\Locale',
-	"crud-path" => 'admin',
+	"middleware"	=>	'web',
+
+	"locale-model"	=>	Infinety\CRUD\Models\Locale::class,
+
+	"crud-route-prefix" 	=> 'admin',
 
 ];

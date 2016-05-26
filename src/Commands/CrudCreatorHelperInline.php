@@ -126,7 +126,7 @@ class CrudCreatorHelperInline extends Command
      */
     private function getDashBoardPath()
     {
-        $path = config('infinety-crud.crud-path');
+        $path = config('infinety-crud.crud-route-prefix');
         $this->crud['dashBoardPath'] = $path;
         //dump($this->crud);
         //dd();
