@@ -21,24 +21,33 @@ class CrudController extends BaseController
 {
     use DispatchesJobs, ValidatesRequests;
 
+    /**
+     * @var array
+     */
     public $data = [];
+    /**
+     * @var array
+     */
     public $crud = [
-                        'model' => "\App\Models\Entity",
-                        'entity_name' => 'entry',
-                        'entity_name_plural' => 'entries',
-                        'ajax_load' => false,
-                        'view_table_permission' => true,
-                        'add_permission' => true,
-                        'edit_permission' => true,
-                        'delete_permission' => true,
-                        'reorder_permission' => true,
-                        'reorder_max_level' => 3,
-                        'details_row' => false,
-                        'is_translate' => false,
-                        'locale_id' => 'iso',
-                        'locale_column' => 'locale',
-                        ];
+        'model'                 => "\App\Models\Entity",
+        'entity_name'           => 'entry',
+        'entity_name_plural'    => 'entries',
+        'ajax_load'             => false,
+        'view_table_permission' => true,
+        'add_permission'        => true,
+        'edit_permission'       => true,
+        'delete_permission'     => true,
+        'reorder_permission'    => true,
+        'reorder_max_level'     => 3,
+        'details_row'           => false,
+        'is_translate'          => false,
+        'locale_id'             => 'iso',
+        'locale_column'         => 'locale',
+    ];
 
+    /**
+     * @var mixed
+     */
     protected $locale;
 
     public function __construct()
@@ -92,6 +101,7 @@ class CrudController extends BaseController
         $this->data['crud'] = $this->crud;
 
         // load the view from /resources/views/vendor/dick/crud/ if it exists, otherwise load the one in the package
+
         return $this->firstViewThatExists('vendor.infinety.crud.list', 'crud::list', $this->data);
     }
 
@@ -119,6 +129,7 @@ class CrudController extends BaseController
         $this->data['crud'] = $this->crud;
 
         // load the view from /resources/views/vendor/dick/crud/ if it exists, otherwise load the one in the package
+
         return $this->firstViewThatExists('vendor.infinety.crud.create', 'crud::create', $this->data);
     }
 
@@ -199,7 +210,7 @@ class CrudController extends BaseController
                 $datatable
                     ->editColumn($column['name'], function ($columnInfo) use ($column) {
                         //                      dd($columnInfo);
-//                      dd($column); //["model"]
+                        //                      dd($column); //["model"]
                         $pivotModel = $this->crud['model'];
                         $dataPivot = $column['model']::find($columnInfo[$column['entity']]);
                         if ($dataPivot) {
@@ -259,6 +270,8 @@ class CrudController extends BaseController
                     return $html;
                 });
         }
+
+        $datatable->rawColumns(['actions']);
 
         return $datatable->make(true);
     }
@@ -344,7 +357,8 @@ class CrudController extends BaseController
         // if it's a relationship with a pivot table, also sync that
         $this->prepareFields();
         foreach ($this->crud['fields'] as $k => $field) {
-            if (isset($field['pivot']) && $field['pivot'] == true) { //&& \Request::input($field['name'] != 0)
+            if (isset($field['pivot']) && $field['pivot'] == true) {
+                //&& \Request::input($field['name'] != 0)
                 $model::find($item->id)->{$field['entity']}()->attach(\Request::input($field['name']));
             }
         }
@@ -396,6 +410,7 @@ class CrudController extends BaseController
         $this->data['crud'] = $this->crud;
 
         // load the view from /resources/views/vendor/dick/crud/ if it exists, otherwise load the one in the package
+
         return $this->firstViewThatExists('vendor.infinety.crud.edit', 'crud::edit', $this->data);
     }
 
@@ -440,7 +455,7 @@ class CrudController extends BaseController
         }
 
         $item = $model::find(\Request::input('id'))
-                        ->update($values_to_store);
+            ->update($values_to_store);
 
         //Check if has Media option
         $fields = $this->getFields();
@@ -465,15 +480,15 @@ class CrudController extends BaseController
                 $table = new $model();
                 $table = $table->getTable();
                 $exists = $modelTranslatable::where($table.'_id', \Request::input('id'))
-                                            ->where($this->crud['locale_column'], $language[$this->crud['locale_id']])->first();
+                    ->where($this->crud['locale_column'], $language[$this->crud['locale_id']])->first();
 
                 if ($exists) {
                     $translatedFields = $translated_items[$language[$this->crud['locale_id']]];
                     $valuesTranslated[] = $translatedFields;
 
                     $modelTranslatable::where($table.'_id', \Request::input('id'))
-                            ->where($this->crud['locale_column'], $language[$this->crud['locale_id']])
-                            ->update($translated_items[$language[$this->crud['locale_id']]]);
+                        ->where($this->crud['locale_column'], $language[$this->crud['locale_id']])
+                        ->update($translated_items[$language[$this->crud['locale_id']]]);
 
                     $models[] = $exists;
                 } else {
@@ -533,6 +548,7 @@ class CrudController extends BaseController
         $this->data['crud'] = $this->crud;
 
         // load the view from /resources/views/vendor/dick/crud/ if it exists, otherwise load the one in the package
+
         return $this->firstViewThatExists('vendor.infinety.crud.show', 'crud::show', $this->data);
     }
 
@@ -569,9 +585,9 @@ class CrudController extends BaseController
     public function reorder($lang = false)
     {
         // if reorder_table_permission is false, abort
-//        if (isset($this->crud['reorder_permission']) && ! $this->crud['reorder_permission']) {
-//            abort(403, 'Not allowed.');
-//        }
+        //        if (isset($this->crud['reorder_permission']) && ! $this->crud['reorder_permission']) {
+        //            abort(403, 'Not allowed.');
+        //        }
 
         if ($lang == false) {
             $lang = \Lang::locale();
@@ -589,6 +605,7 @@ class CrudController extends BaseController
         $this->data['crud'] = $this->crud;
 
         // load the view from /resources/views/vendor/dick/crud/ if it exists, otherwise load the one in the package
+
         return $this->firstViewThatExists('vendor.infinety.crud.reorder', 'crud::reorder', $this->data);
     }
 
@@ -602,9 +619,9 @@ class CrudController extends BaseController
     public function saveReorder()
     {
         // if reorder_table_permission is false, abort
-//        if (isset($this->crud['reorder_permission']) && ! $this->crud['reorder_permission']) {
-//            abort(403, 'Not allowed.');
-//        }
+        //        if (isset($this->crud['reorder_permission']) && ! $this->crud['reorder_permission']) {
+        //            abort(403, 'Not allowed.');
+        //        }
 
         $model = $this->crud['model'];
         $count = 0;
@@ -660,6 +677,7 @@ class CrudController extends BaseController
         }
 
         // load the view from /resources/views/vendor/dick/crud/ if it exists, otherwise load the one in the package
+
         return $this->firstViewThatExists('vendor.infinety.crud.details_row', 'crud::details_row', $this->data);
     }
 
@@ -686,6 +704,7 @@ class CrudController extends BaseController
         }
 
         // redirect to the edit form for that translation
+
         return redirect(str_replace($id, $new_entry->id, str_replace('translate/'.$lang, 'edit', \Request::url())));
     }
 
@@ -873,6 +892,7 @@ class CrudController extends BaseController
 
         // if there are no fake fields defined, this will just return the original Request in full
         // since no modifications or additions have been made to $request
+
         return $request;
     }
 
@@ -973,9 +993,9 @@ class CrudController extends BaseController
 
             foreach ($current_columns_array as $key => $col) {
                 $proper_columns_array[] = [
-                                'name' => $col,
-                                'label' => ucfirst($col), //TODO: also replace _ with space
-                            ];
+                    'name'  => $col,
+                    'label' => ucfirst($col), //TODO: also replace _ with space
+                ];
             }
 
             $this->crud['columns'] = $proper_columns_array;
@@ -1024,16 +1044,16 @@ class CrudController extends BaseController
                 if ($languages) {
                     foreach ($languages as $lang) {
                         $proper_fields_array[$lang] = [
-                                'name' => $field,
-                                'label' => ucfirst($field), // TODO: also replace _ with space
-                                'type' => 'text', // TODO: choose different types of fields depending on the MySQL column type
+                            'name'  => $field,
+                            'label' => ucfirst($field), // TODO: also replace _ with space
+                            'type'  => 'text', // TODO: choose different types of fields depending on the MySQL column type
                         ];
                     }
                 } else {
                     $proper_fields_array[] = [
-                            'name' => $field,
-                            'label' => ucfirst($field), // TODO: also replace _ with space
-                            'type' => 'text', // TODO: choose different types of fields depending on the MySQL column type
+                        'name'  => $field,
+                        'label' => ucfirst($field), // TODO: also replace _ with space
+                        'type'  => 'text', // TODO: choose different types of fields depending on the MySQL column type
                     ];
                 }
             }
@@ -1092,7 +1112,7 @@ class CrudController extends BaseController
                         if (is_array($fieldArray)) {
                             foreach ($fieldArray as $e => $field) {
                                 if (!isset($field['value'])) {
-                                    if (!is_null($entry->translate($lang))) {
+                                    if (!null === $entry->translate($lang)) {
                                         if (isset($field['fake']) && $field['fake'] == true) {
                                             $fields['translate'][$lang][$e]['value'] = $this->getTranslationFake($entry, $field, $lang, $field['name']);
                                         } else {
@@ -1110,9 +1130,9 @@ class CrudController extends BaseController
 
                 // always have a hidden input for the entry id
                 $this->crud['fields']['normal'][] = [
-                    'name' => 'id',
+                    'name'  => 'id',
                     'value' => $entry->id,
-                    'type' => 'hidden',
+                    'type'  => 'hidden',
                 ];
             } else {
                 $fields = $this->crud['fields'];
@@ -1132,9 +1152,9 @@ class CrudController extends BaseController
 
                 // always have a hidden input for the entry id
                 $this->crud['fields'][] = [
-                    'name' => 'id',
+                    'name'  => 'id',
                     'value' => $entry->id,
-                    'type' => 'hidden',
+                    'type'  => 'hidden',
                 ];
             }
 
@@ -1268,7 +1288,7 @@ class CrudController extends BaseController
 
                         //Multiple Upload
                         foreach ($fileToUpload as $file) {
-                            if (!is_null($file)) {
+                            if (!null === $file) {
                                 $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                                 $name = filter_var($name, FILTER_SANITIZE_STRING);
                                 $name = $this->sanitize($name).'.'.$file->getClientOriginalExtension();
@@ -1313,6 +1333,14 @@ class CrudController extends BaseController
         return $folder;
     }
 
+    /**
+     * @param $folder
+     * @param $file
+     * @param $name
+     * @param $checkExistsFile
+     * @param false $field
+     * @return mixed
+     */
     private function uploadFile($folder, $file, $name, $checkExistsFile = false, $field = null)
     {
         if ($checkExistsFile && isset($field['value'])) {
@@ -1340,6 +1368,9 @@ class CrudController extends BaseController
         return $folder.'/'.$name;
     }
 
+    /**
+     * @param $item
+     */
     private function checkHasImagesToDelete($item)
     {
         $fields = $this->getFields();
@@ -1361,19 +1392,24 @@ class CrudController extends BaseController
         }
     }
 
+    /**
+     * @param $string
+     * @param $forceLowercase
+     * @param true $noAccents
+     */
     public function sanitize($string, $forceLowercase = true, $noAccents = true)
     {
         $strip = ['~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '=', '+', '[', '{', ']',
             '}', '\\', '|', ';', ':', '"', "'", '&#8216;', '&#8217;', '&#8220;', '&#8221;', '&#8211;', '&#8212;',
-            'â€”', 'â€“', ',', '<', '.', '>', '/', '?', ];
+            'â€”', 'â€“', ',', '<', '.', '>', '/', '?'];
         $clean = trim(str_replace($strip, '', strip_tags($string)));
         $clean = preg_replace('/\s+/', '-', $clean);
         $clean = ($noAccents) ? preg_replace('/[^a-zA-Z0-9]/', '', $clean) : $clean;
 
         return ($forceLowercase) ?
-            (function_exists('mb_strtolower')) ?
-                mb_strtolower($clean, 'UTF-8') :
-                strtolower($clean) :
-            $clean;
+        (function_exists('mb_strtolower')) ?
+        mb_strtolower($clean, 'UTF-8') :
+        strtolower($clean) :
+        $clean;
     }
 }
