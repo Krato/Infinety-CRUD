@@ -332,9 +332,9 @@ class CrudController extends BaseController
             $valuesTranslated = [];
             foreach ($this->data['crud']['languages'] as $language) {
                 $table = new $model();
-                $table = $table->getTable();
+                $relationKey = $table->getRelationKey();
 
-                $itemInfo = [$table.'_id' => $item->id, $this->crud['locale_column'] => $language[$this->crud['locale_id']]];
+                $itemInfo = [$relationKey => $item->id, $this->crud['locale_column'] => $language[$this->crud['locale_id']]];
 
                 $translatedFields = array_merge($itemInfo, $translated_items[$language[$this->crud['locale_id']]]);
 
@@ -478,21 +478,21 @@ class CrudController extends BaseController
 
             foreach ($this->data['crud']['languages'] as $language) {
                 $table = new $model();
-                $table = $table->getTable();
-                $exists = $modelTranslatable::where($table.'_id', \Request::input('id'))
+                $relationKey = $table->getRelationKey();
+                $exists = $modelTranslatable::where($relationKey, \Request::input('id'))
                     ->where($this->crud['locale_column'], $language[$this->crud['locale_id']])->first();
 
                 if ($exists) {
                     $translatedFields = $translated_items[$language[$this->crud['locale_id']]];
                     $valuesTranslated[] = $translatedFields;
 
-                    $modelTranslatable::where($table.'_id', \Request::input('id'))
+                    $modelTranslatable::where($relationKey, \Request::input('id'))
                         ->where($this->crud['locale_column'], $language[$this->crud['locale_id']])
                         ->update($translated_items[$language[$this->crud['locale_id']]]);
 
                     $models[] = $exists;
                 } else {
-                    $itemInfo = [$table.'_id' => \Request::input('id'), $this->crud['locale_column'] => $language[$this->crud['locale_id']]];
+                    $itemInfo = [$relationKey => \Request::input('id'), $this->crud['locale_column'] => $language[$this->crud['locale_id']]];
 
                     $translatedFields = array_merge($itemInfo, $translated_items[$language[$this->crud['locale_id']]]);
 
@@ -1111,8 +1111,9 @@ class CrudController extends BaseController
                     foreach ($fields['translate'] as $lang => $fieldArray) {
                         if (is_array($fieldArray)) {
                             foreach ($fieldArray as $e => $field) {
+
                                 if (!isset($field['value'])) {
-                                    if (!null === $entry->translate($lang)) {
+                                    if ($entry->translate($lang)) {
                                         if (isset($field['fake']) && $field['fake'] == true) {
                                             $fields['translate'][$lang][$e]['value'] = $this->getTranslationFake($entry, $field, $lang, $field['name']);
                                         } else {
@@ -1288,7 +1289,7 @@ class CrudController extends BaseController
 
                         //Multiple Upload
                         foreach ($fileToUpload as $file) {
-                            if (!null === $file) {
+                            if ($file) {
                                 $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                                 $name = filter_var($name, FILTER_SANITIZE_STRING);
                                 $name = $this->sanitize($name).'.'.$file->getClientOriginalExtension();
