@@ -10,18 +10,18 @@
     	@endforeach
     	>
 
-    	@if ($entity_model::isColumnNullable($field['name']))
-            <option value="">-</option>
-        @endif
+    	<option value="">-</option>
 
-	    	@if (isset($field['model']))
-	    		@foreach ($field['model']::all() as $connected_entity_entry)
-	    			<option value="{{ $connected_entity_entry->id }}"
-						@if (isset($field['value']) && $connected_entity_entry->id==$field['value'])
-							 selected
-						@endif
-	    			>{{ $connected_entity_entry->$field['attribute'] }}</option>
-	    		@endforeach
-	    	@endif
+    	@if (isset($field['model']))
+    		@foreach ($field['model']::all() as $connected_entity_entry)
+    			<option value="{{ $connected_entity_entry->id }}" 
+                    @if (isset($field['value']) && $connected_entity_entry->id == $field['value']))
+                         selected
+                    @endif
+                    >
+                    {{ $connected_entity_entry->{$field['attribute']} }}
+                </option>
+    		@endforeach
+    	@endif
 	</select>
   </div>
