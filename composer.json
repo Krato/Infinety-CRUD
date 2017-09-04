@@ -17,18 +17,18 @@
         }
     ],
     "require": {
-        "illuminate/support": "5.4.*",
+        "illuminate/support": "5.5.*",
         "php" : "^7.0",
         "jenssegers/date" :"^3.2",
-        "laravelcollective/html" : "5.4.*",
-        "vinkla/translator" : "4.*",
-        "yajra/laravel-datatables-oracle" : "7.*",
+        "laravelcollective/html" : "5.5.*",
+        "vinkla/translator" : "5.*",
+        "yajra/laravel-datatables-oracle" : "8.*",
         "jorgejavierleon/laravelpnotify" : "~1.0",
         "infinety-es/filemanager": "2.*",
-        "spatie/laravel-medialibrary": "4.*"
+        "spatie/laravel-medialibrary": "6.*"
     },
     "require-dev": {
-        "phpunit/phpunit" : "4.*",
+        "phpunit/phpunit" : "~6.0",
         "scrutinizer/ocular": "~1.1"
     },
     "autoload": {
@@ -39,6 +39,13 @@
     "autoload-dev": {
         "psr-4": {
             "Infinety\\CRUD\\Test\\": "tests"
+        }
+    },
+    "extra": {
+      "laravel": {
+            "providers": [
+                "Infinety\\CRUD\\CrudServiceProvider"
+            ]
         }
     },
     "scripts": {
