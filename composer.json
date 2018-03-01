@@ -17,11 +17,10 @@
         }
     ],
     "require": {
-        "illuminate/support": "5.5.*",
+        "illuminate/support": "5.*",
         "php" : "^7.0",
         "jenssegers/date" :"^3.2",
         "laravelcollective/html" : "5.5.*",
-        "vinkla/translator" : "5.*",
         "yajra/laravel-datatables-oracle" : "8.*",
         "jorgejavierleon/laravelpnotify" : "~1.0",
         "infinety-es/filemanager": "2.*",

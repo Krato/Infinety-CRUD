@@ -11,7 +11,7 @@ class MediaLogger
      *
      * Saves url of asset to the model
      *
-     * @param  SpatieMediaLibraryEventsMediaHasBeenAdded  $event
+     * @param  Spatie MediaLibrary Events MediaHasBeenAdded  $event
      * @return void
      */
     public function handle(MediaHasBeenAdded $events)

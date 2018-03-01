@@ -2,14 +2,14 @@
 
 namespace Infinety\CRUD;
 
+use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Route;
-use Storage;
-use Illuminate\Console\DetectsApplicationNamespace;
 use Infinety\CRUD\Commands\CrudCreatorHelper;
 use Infinety\CRUD\Commands\CrudCreatorHelperInline;
 use Infinety\CRUD\Commands\CrudInstaller;
+use Route;
+use Storage;
 
 class CrudServiceProvider extends ServiceProvider
 {
@@ -30,7 +30,7 @@ class CrudServiceProvider extends ServiceProvider
         // use this if your package has views
         $this->loadViewsFrom(realpath(__DIR__.'/resources/views'), 'crud');
 
-         /*
+        /*
          * Publish Layout view
          */
         $this->publishes([
@@ -45,14 +45,14 @@ class CrudServiceProvider extends ServiceProvider
         $this->publishes([__DIR__.'/Listeners' => app_path('Listeners'),
         ]);
 
-        // use this if your package has routes
+        // Setup Routes
         $this->setupRoutes($this->app->router);
 
         /*
          * Config File
          */
         $this->publishes([
-             __DIR__.'/../config/infinety-crud.php' => config_path('infinety-crud.php'),
+            __DIR__.'/../config/infinety-crud.php' => config_path('infinety-crud.php'),
         ], 'config');
 
         /*
@@ -140,6 +140,11 @@ class CrudServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * @param $name
+     * @param $controller
+     * @param array $options
+     */
     public static function resource($name, $controller, array $options = [])
     {
         // CRUD routes
