@@ -38,7 +38,10 @@
         "laravel": {
             "providers": [
                 "Infinety\\CRUD\\CrudServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "CRUD": "Infinety\\CRUD\\CrudServiceProvider"
+            }
         }
     }
 }
