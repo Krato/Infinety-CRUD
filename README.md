@@ -65,11 +65,7 @@ You can format a Date object like the DateTime object (http://www.php.net/manual
 
 ## ToDO
 
-Add a better documentation
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Add documentation
 
 ## Contributing
 
@@ -77,7 +73,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 
-If you discover any security related issues, please email hello@krato.ro instead of using the issue tracker.
+If you discover any security related issues, please email hello@ericlagarda.com instead of using the issue tracker.
 
 ## Credits
 
