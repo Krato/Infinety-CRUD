@@ -3,8 +3,6 @@
 namespace Infinety\CRUD;
 
 use DB;
-use Illuminate\Database\Eloquent\Model;
-use Lang;
 
 trait CrudTrait
 {
@@ -12,8 +10,12 @@ trait CrudTrait
     |--------------------------------------------------------------------------
     | Methods for ENUM and SELECT crud fields.
     |--------------------------------------------------------------------------
-    */
+     */
 
+    /**
+     * @param $field_name
+     * @return mixed
+     */
     public static function getPossibleEnumValues($field_name)
     {
         $instance = new static(); // create an instance of the model to be able to get the table name
@@ -29,6 +31,10 @@ trait CrudTrait
         return $enum;
     }
 
+    /**
+     * @param $column_name
+     * @return mixed
+     */
     public static function isColumnNullable($column_name)
     {
         $instance = new static(); // create an instance of the model to be able to get the table name
@@ -41,7 +47,7 @@ trait CrudTrait
     |--------------------------------------------------------------------------
     | Methods for Fake Fields functionality (used in PageManager).
     |--------------------------------------------------------------------------
-    */
+     */
 
     /**
      * Add fake fields as regular attributes, even though they are stored as JSON.
@@ -55,11 +61,11 @@ trait CrudTrait
         foreach ($columns as $key => $column) {
             $column_contents = $this->{$column};
 
-            if (! is_object($this->{$column})) {
+            if (!is_object($this->{$column})) {
                 $column_contents = json_decode($this->{$column});
             }
 
-            if (count($column_contents)) {
+            if (count((array) $column_contents)) {
                 foreach ($column_contents as $fake_field_name => $fake_field_value) {
                     $this->setAttribute($fake_field_name, $fake_field_value);
                 }
@@ -78,7 +84,7 @@ trait CrudTrait
     {
         $model = '\\'.get_class($this);
 
-        if (! count($columns)) {
+        if (!count($columns)) {
             if (property_exists($model, 'fakeColumns')) {
                 $columns = $this->fakeColumns;
             } else {
@@ -95,93 +101,93 @@ trait CrudTrait
     |--------------------------------------------------------------------------
     | Translation Methods
     |--------------------------------------------------------------------------
-    */
+     */
 
 //    public function translations()
-//    {
-//        $model = '\\'.get_class($this);
-//
-//        if (isset($this->translatable))
-//        {
-//            return $model::where('translation_of', $this->id)->get();
-//        }
-//
-//        return collect();
-//    }
-//
-//    // get translations plus current item, plus original
-//    public function allTranslations()
-//    {
-//        $model = '\\'.get_class($this);
-//
-//        // the translations
-//        $translations = $this->translations();
-//
-//        // the current item
-//        $all_translations = $translations->push($this);
-//
-//        // the original
-//        if ($this->translation_of) {
-//            $original = $model::find($this->translation_of);
-//            $all_translations = $all_translations->push($original);
-//        }
-//
-//        return $all_translations;
-//    }
-//
-//    public function translation($translation_lang = false)
-//    {
-//        if ($translation_lang==false) {
-//            $translation_lang = Lang::locale();
-//        }
-//
-//        $model = '\\'.get_class($this);
-//        if (isset($this->translatable))
-//        {
-//            return $model::where('translation_of', $this->id)->where('translation_lang', $translation_lang)->first();
-//        }
-//
-//        return false;
-//    }
-//
-//    public function translationLanguages()
-//    {
-//        $model = '\\'.get_class($this);
-//        $translations = $this->translations();
-//
-//        $translated_in = [];
-//
-//        if ($translations->count())
-//        {
-//            foreach ($translations as $key => $translation) {
-//                $translated_in[] = $translation->language;
-//            }
-//        }
-//
-//        return collect($translated_in);
-//    }
-//
-//    public function language()
-//    {
-//        return $this->belongsTo('\Infinety\TranslationManager\Models\Language', 'translation_lang', 'abbr');
-//    }
+    //    {
+    //        $model = '\\'.get_class($this);
+    //
+    //        if (isset($this->translatable))
+    //        {
+    //            return $model::where('translation_of', $this->id)->get();
+    //        }
+    //
+    //        return collect();
+    //    }
+    //
+    //    // get translations plus current item, plus original
+    //    public function allTranslations()
+    //    {
+    //        $model = '\\'.get_class($this);
+    //
+    //        // the translations
+    //        $translations = $this->translations();
+    //
+    //        // the current item
+    //        $all_translations = $translations->push($this);
+    //
+    //        // the original
+    //        if ($this->translation_of) {
+    //            $original = $model::find($this->translation_of);
+    //            $all_translations = $all_translations->push($original);
+    //        }
+    //
+    //        return $all_translations;
+    //    }
+    //
+    //    public function translation($translation_lang = false)
+    //    {
+    //        if ($translation_lang==false) {
+    //            $translation_lang = Lang::locale();
+    //        }
+    //
+    //        $model = '\\'.get_class($this);
+    //        if (isset($this->translatable))
+    //        {
+    //            return $model::where('translation_of', $this->id)->where('translation_lang', $translation_lang)->first();
+    //        }
+    //
+    //        return false;
+    //    }
+    //
+    //    public function translationLanguages()
+    //    {
+    //        $model = '\\'.get_class($this);
+    //        $translations = $this->translations();
+    //
+    //        $translated_in = [];
+    //
+    //        if ($translations->count())
+    //        {
+    //            foreach ($translations as $key => $translation) {
+    //                $translated_in[] = $translation->language;
+    //            }
+    //        }
+    //
+    //        return collect($translated_in);
+    //    }
+    //
+    //    public function language()
+    //    {
+    //        return $this->belongsTo('\Infinety\TranslationManager\Models\Language', 'translation_lang', 'abbr');
+    //    }
 
 //    /**
-//     * Overwriting the Eloquent save() method, to set a default translation language, if necessary.
-//     */
-//    public function save(array $options = [])
-//    {
-//        if (isset($this->translatable))
-//        {
-//            // set a default language (the one the user is currently using)
-//            if (!(isset($this->translation_lang)) || $this->translation_lang == '')
-//            {
-//                $this->translation_lang = \Lang::locale();
-//            }
-//
-//            // TODO: if some untranslatable attributes are empty, but its parent's are filled, copy them
-//        }
-//
-//        parent::save();
-//    }
+    //     * Overwriting the Eloquent save() method, to set a default translation language, if necessary.
+    //     */
+    //    public function save(array $options = [])
+    //    {
+    //        if (isset($this->translatable))
+    //        {
+    //            // set a default language (the one the user is currently using)
+    //            if (!(isset($this->translation_lang)) || $this->translation_lang == '')
+    //            {
+    //                $this->translation_lang = \Lang::locale();
+    //            }
+    //
+    //            // TODO: if some untranslatable attributes are empty, but its parent's are filled, copy them
+    //        }
+    //
+    //        parent::save();
+    //    }
 }
