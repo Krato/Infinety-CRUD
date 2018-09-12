@@ -15,7 +15,9 @@
 
 <script>
     @foreach($fields as $language => $field)
-        @if( $language == 'lang' )
+
+
+        @if( $language === 'lang' )
             @foreach($field as $lang => $fieldsArray)   
                 @foreach($fieldsArray as $fieldLang)
 
