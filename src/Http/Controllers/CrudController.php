@@ -627,7 +627,7 @@ class CrudController extends BaseController
         $count = 0;
         $all_entries = \Request::input('tree');
 
-        if (count((array) $all_entries)) {
+        if (count($all_entries)) {
             foreach ($all_entries as $key => $entry) {
                 if ($entry['item_id'] != '' && $entry['item_id'] != null) {
                     $item = $model::find($entry['item_id']);
@@ -795,7 +795,7 @@ class CrudController extends BaseController
                     }
                 }
                 // Convert to json data fake columns
-                if (count((array) $fake_field_columns_to_encode)) {
+                if (count($fake_field_columns_to_encode)) {
                     foreach ($fake_field_columns_to_encode as $key => $value) {
                         $request[$value] = json_encode($request[$value]);
                     }
@@ -832,7 +832,7 @@ class CrudController extends BaseController
                         }
                     }
 
-                    if (count((array) $fake_field_columns_to_encode)) {
+                    if (count($fake_field_columns_to_encode)) {
                         foreach ($fake_field_columns_to_encode as $key => $value) {
                             if (isset($request['translate'][$language['iso']][$value])) {
                                 $request['translate'][$language['iso']][$value] = json_encode($request['translate'][$language['iso']][$value]);
@@ -881,7 +881,7 @@ class CrudController extends BaseController
                     }
                 }
             }
-            if (count((array) $fake_field_columns_to_encode)) {
+            if (count($fake_field_columns_to_encode)) {
                 foreach ($fake_field_columns_to_encode as $key => $value) {
                     $request[$value] = json_encode($request[$value]);
                 }
@@ -969,7 +969,7 @@ class CrudController extends BaseController
             }
         }
 
-        if (!count((array) $fake_field_columns_to_encode)) {
+        if (!count($fake_field_columns_to_encode)) {
             return ['extras'];
         }
 
@@ -1281,7 +1281,7 @@ class CrudController extends BaseController
             if (isset($field['type']) && ($field['type'] == 'image' || $field['type'] == 'upload' || $field['type'] == 'browse')) {
                 $filesToUpload = \Request::file($field['name']);
 
-                $fileCount = count((array) $filesToUpload);
+                $fileCount = count($filesToUpload);
 
                 if ($fileCount != 0) {
                     if ($fileCount > 1) {
